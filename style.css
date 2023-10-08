@@ -1,0 +1,32 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+canvas {
+  display: block;
+}
+
+#dropzone {
+  padding: 15px;
+  border-style: dashed;
+  font-size: 16pt;
+  width: 40%;
+  display: block;
+}
+
+#btn {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #0074B7;
+    background-color: #60A3D9;
+    color: #000C66;
+    padding: 10px;
+    margin:auto;
+    margin-top :10px;
+    border-radius: 4px;
+    text-align: center;
+
+ }
