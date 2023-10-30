@@ -7,8 +7,7 @@ let particles = [];
 var playING = false;
 
 //TODO
-// make drag area disappear once playing, and a go back button
-// fix sync after pausing
+// make drag area disappear once playing, and a go back button?
 
 function setup() {
   createCanvas(windowWidth, windowHeight - 200);
@@ -22,24 +21,32 @@ function setup() {
 
 class Particle {
   constructor(sp) {
-    this.pos = createVector(0, 0);
+    this.pos = createVector(0, 0); //point
     this.vel = createVector(0, 0);
     this.acc = p5.Vector.random2D().normalize();
+    //fill("rgba(237, 125, 49, 0.5)");
+    var r = 237 + random(-10, 10);
+    var g = 125 + random(-10, 10);
+    var b = 49 + random(-10, 10);
+    this.color = color(r, g, b, 200);
   }
 
   createParticle(d) {
     noStroke();
-    fill("rgba(237, 125, 49, 0.5)");
-    circle(this.pos.x, this.pos.y, d);
+    fill(this.color);
+    if (this.pos.mag() > 15) {
+      circle(this.pos.x, this.pos.y, d);
+    }
   }
 
   moveParticle(cond) {
-    var m = map(sin(frameCount * 6), -1, 1, 0.1, 0.5);
+    var songTime = song.currentTime();
+    var m = map(sin(songTime * 6), -1, 1, 0.2, 0.7);
     this.acc.mult(m);
     this.vel.add(this.acc);
     this.pos.add(this.vel);
     if (cond) {
-      for (var i = 0; i < 10; i++) {
+      for (var i = 0; i < 5; i++) {
         this.pos.add(this.vel);
       }
     }
@@ -71,7 +78,6 @@ function togglePlaying() {
   if (!song.isPlaying()) {
     song.play();
     playING = true;
-    song.setVolume(0.3);
     button.html("pause");
   } else {
     song.pause();
@@ -91,41 +97,45 @@ function draw() {
   background(0);
   var vol = amp.getLevel();
   volhistory.push(vol);
+  var r, g, b, a;
 
+  let spectrum = fft.analyze();
+  let energy = fft.getEnergy(50, 180);
   if (playING == true) {
-    var diam = map(vol, 0, 0.3, 4, 20);
-    fill(255, 248, 201);
-    noStroke();
-    circle(width / 2, height / 2, diam);
-
-    let spectrum = fft.analyze();
-    let energy = fft.getEnergy(50, 180);
+    var diam = map(vol, 0, 0.3, 4, 10);
     translate(width / 2, height / 2);
     noFill();
     beginShape();
     for (let i = 0; i < spectrum.length; i++) {
       var angle = map(i, 0, spectrum.length, 0, 360);
+
+      var x = map(i, 0, spectrum.length, 0, windowWidth - windowWidth / 5);
+      var y = map(spectrum[i], 0, 255, 0, windowHeight - windowHeight / 5);
+      var rad = map(spectrum[i], 0, 450, 0, 300);
+      x = rad * cos(angle);
+      y = rad * sin(angle);
       r = random(100, 166);
       g = random(153, 246);
       b = 255;
+      // if(x < 1 && y < 1){
+      //   a = 0;
+      // } else {
       a = random(150, 255);
+      // }
       stroke(r, g, b, a);
-      var x = map(i, 0, spectrum.length, 0, windowWidth - windowWidth / 5);
-      var y = map(spectrum[i], 0, 255, 0, windowHeight - windowHeight / 5);
-      var r = map(spectrum[i], 0, 450, 0, 300);
-      x = r * cos(angle);
-      y = r * sin(angle);
       curveVertex(x, y);
     }
     endShape();
-
-    // for (let j = 0; j < spectrum.length/1024; j++) {
     p = new Particle();
     particles.push(p);
-    // }
     for (let k = 0; k < particles.length; k++) {
       particles[k].createParticle(diam);
       particles[k].moveParticle(energy > 180);
     }
+
+    // translate(-width / 2, -height / 2);
+    // fill(0);
+    // stroke(r, g, b, a);
+    // circle(width / 2, height / 2, diam * 3.5);
   }
 }
