@@ -2,16 +2,23 @@
 <html lang="en">
   <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.js"></script>
+    <!--      <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.dom.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/addons/p5.sound.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <style>
+       body {
+        background-image: url('lines.png');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+      }
+    </style>
+
+    <link rel="stylesheet" type="text/css" href="style.css" />
     <meta charset="utf-8" />
   </head>
   <body>
-    <p id = "dropzone">
-       Drag your audio file here
-    </p>
-    <main>
-    </main>
+    <p id="dropzone">Drag your audio file here</p>
+    <main></main>
 
     <script src="sketch.js"></script>
   </body>

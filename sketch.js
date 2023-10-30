@@ -5,8 +5,6 @@ var amp;
 var volhistory = [];
 let particles = [];
 var playING = false;
-//todo later
-var newSong = false;
 let particleColors = [
   "#FFFB73",
   "#F88379",
@@ -31,17 +29,27 @@ let curveColors = [
   "#B7E9F7",
 ];
 
+let bgColors = ["#d9d7f1", "#fffdde", "#e7fbbe", "#ffcbcb"];
+
 //TODO
 // make drag area disappear once playing, and a go back button?
 
 function setup() {
   createCanvas(windowWidth, windowHeight - 150);
+  color1 = color(217, 215, 241);
+  color2 = color(255, 253, 222);
+  color3 = color(231, 251, 190);
+  color4 = color(255, 203, 203);
 
-  color1 = color(17, 18, 20);
-  color2 = color(36, 38, 39);
-  color3 = color(0, 0, 0);
-  color4 = color(0, 16, 52);
+  dropzone = select("#dropzone");
+  dropzone.dragOver(highlight);
+  dropzone.dragLeave(unhighlight);
+  dropzone.drop(processFile, unhighlight);
+  amp = new p5.Amplitude();
+  fft = new p5.FFT();
+}
 
+function resetSketch() {
   dropzone = select("#dropzone");
   dropzone.dragOver(highlight);
   dropzone.dragLeave(unhighlight);
@@ -93,11 +101,12 @@ function highlight() {
 }
 
 function unhighlight() {
-  dropzone.style("background-color", "#fff");
+  dropzone.style("background-color", "transparent");
 }
 
 function loaded() {
   playING = true;
+  dropzone.remove();
   song.play();
   song.onended(endSong);
   button = createButton("pause");
@@ -121,22 +130,29 @@ function endSong() {
   if (playING == true) {
     playING = false;
     button.remove();
+    // clear();
+    // var buttonReset = createButton("reset");
+    // buttonReset.mousePressed(resetSketch);
   }
 }
 
 function createtheme() {
-  randomSeed(2);
+  // randomSeed(2)
 
   for (let i = 0; i < windowWidth; i++) {
     strokeWeight(0.15);
-    let randomNum = random(1, 4);
-    if (randomNum < 2) {
+    let randomNum = Math.round(random(bgColors.length - 1));
+
+    if (randomNum < 1) {
       stroke(color1);
-    } else if (randomNum < 3) {
+    } else if (randomNum < 2) {
       stroke(color3);
+    } else if (randomNum < 3) {
+      stroke(color4);
     } else {
       stroke(color2);
     }
+
     line(random(40) - 20 + i, 0, random(40) - 20 + i, windowHeight);
     line(random(40) - 20 + i, 1, random(40) - 20 + i, windowHeight - 1);
     line(0, random(40) - 20 + i, windowWidth, random(40) - 20 + i);
@@ -145,16 +161,16 @@ function createtheme() {
 }
 
 function draw() {
-  background(0);
-  //     createtheme();
-
-  var vol = amp.getLevel();
-  volhistory.push(vol);
-  var r, g, b, a;
-
-  let spectrum = fft.analyze();
-  let energy = fft.getEnergy(50, 180);
   if (playING == true) {
+    background(0);
+
+    var vol = amp.getLevel();
+    volhistory.push(vol);
+    var r, g, b, a;
+
+    let spectrum = fft.analyze();
+    let energy = fft.getEnergy(50, 180);
+
     var diam = map(vol, 0, 0.3, 4, 10);
     translate(width / 2, height / 2);
 
@@ -172,7 +188,7 @@ function draw() {
 
       var x = map(i, 0, spectrum.length, 0, windowWidth - windowWidth / 5);
       var y = map(spectrum[i], 0, 255, 0, windowHeight - windowHeight / 5);
-      var rad = map(spectrum[i], 0, 450, 0, 300);
+      var rad = map(spectrum[i], 0, 450, 0, 400);
       x = rad * cos(angle);
       y = rad * sin(angle);
 
@@ -186,6 +202,7 @@ function draw() {
         230 + random(-30, 25)
       );
 
+      strokeWeight(1.4);
       curveVertex(x, y);
     }
     endShape();

@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
 }
@@ -7,26 +8,41 @@ canvas {
   display: block;
 }
 
+p {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 100px;
+  height: 100px;
+}
+
 #dropzone {
-  padding: 15px;
+  padding: 20px;
   border-style: dashed;
-  font-size: 16pt;
-  width: 40%;
+  font-size: 30pt;
+  width: 60%;
+  border-radius: 10px;
   display: block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
 
 #btn {
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid #0074B7;
-    background-color: #60A3D9;
-    color: #000C66;
-    padding: 10px;
-    margin:auto;
-    margin-top :10px;
-    border-radius: 4px;
-    text-align: center;
-
- }
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #0074B7;
+  background-color: #60A3D9;
+  color: #000C66;
+  padding: 20px;
+  margin: auto;
+  margin-top: 20px;
+  border-radius: 4px;
+  font-size: 15pt;
+  text-align: center;
+}
