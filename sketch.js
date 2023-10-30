@@ -5,12 +5,43 @@ var amp;
 var volhistory = [];
 let particles = [];
 var playING = false;
+//todo later
+var newSong = false;
+let particleColors = [
+  "#FFFB73",
+  "#F88379",
+  "#ff8100",
+  "#ff9c38",
+  "#ffbe6d",
+  "#FFF8C9",
+  "#fcc6c2",
+];
+
+let curveColors = [
+  "#2C43B0",
+  "#3364C0",
+  "#427BD2",
+  "#4C9ADD",
+  "#C4B0FF",
+  "#DFCCFB",
+  "#BEADFA",
+  "#64B6EE",
+  "#7AD7F0",
+  "#92DFF3",
+  "#B7E9F7",
+];
 
 //TODO
 // make drag area disappear once playing, and a go back button?
 
 function setup() {
-  createCanvas(windowWidth, windowHeight - 200);
+  createCanvas(windowWidth, windowHeight - 150);
+
+  color1 = color(17, 18, 20);
+  color2 = color(36, 38, 39);
+  color3 = color(0, 0, 0);
+  color4 = color(0, 16, 52);
+
   dropzone = select("#dropzone");
   dropzone.dragOver(highlight);
   dropzone.dragLeave(unhighlight);
@@ -25,15 +56,15 @@ class Particle {
     this.vel = createVector(0, 0);
     this.acc = p5.Vector.random2D().normalize();
     //fill("rgba(237, 125, 49, 0.5)");
-    var r = 237 + random(-10, 10);
-    var g = 125 + random(-10, 10);
-    var b = 49 + random(-10, 10);
-    this.color = color(r, g, b, 200);
+    var pNum = Math.round(random(particleColors.length - 1));
+    this.color = particleColors[pNum];
   }
 
   createParticle(d) {
     noStroke();
-    fill(this.color);
+    var chosenColor = color(this.color);
+    var a = 200;
+    fill(red(chosenColor), green(chosenColor), blue(chosenColor), a);
     if (this.pos.mag() > 15) {
       circle(this.pos.x, this.pos.y, d);
     }
@@ -93,8 +124,30 @@ function endSong() {
   }
 }
 
+function createtheme() {
+  randomSeed(2);
+
+  for (let i = 0; i < windowWidth; i++) {
+    strokeWeight(0.15);
+    let randomNum = random(1, 4);
+    if (randomNum < 2) {
+      stroke(color1);
+    } else if (randomNum < 3) {
+      stroke(color3);
+    } else {
+      stroke(color2);
+    }
+    line(random(40) - 20 + i, 0, random(40) - 20 + i, windowHeight);
+    line(random(40) - 20 + i, 1, random(40) - 20 + i, windowHeight - 1);
+    line(0, random(40) - 20 + i, windowWidth, random(40) - 20 + i);
+    line(1, random(40) - 20 + i, windowWidth - 1, random(40) - 20 + i);
+  }
+}
+
 function draw() {
   background(0);
+  //     createtheme();
+
   var vol = amp.getLevel();
   volhistory.push(vol);
   var r, g, b, a;
@@ -104,6 +157,14 @@ function draw() {
   if (playING == true) {
     var diam = map(vol, 0, 0.3, 4, 10);
     translate(width / 2, height / 2);
+
+    p = new Particle();
+    particles.push(p);
+    for (let k = 0; k < particles.length; k++) {
+      particles[k].createParticle(diam);
+      particles[k].moveParticle(energy > 180);
+    }
+
     noFill();
     beginShape();
     for (let i = 0; i < spectrum.length; i++) {
@@ -114,28 +175,19 @@ function draw() {
       var rad = map(spectrum[i], 0, 450, 0, 300);
       x = rad * cos(angle);
       y = rad * sin(angle);
-      r = random(100, 166);
-      g = random(153, 246);
-      b = 255;
-      // if(x < 1 && y < 1){
-      //   a = 0;
-      // } else {
-      a = random(150, 255);
-      // }
-      stroke(r, g, b, a);
+
+      var vertexNum = Math.round(random(curveColors.length - 1));
+      var chosenColor = color(curveColors[vertexNum]);
+      // var chosenColor = color(this.color);
+      stroke(
+        red(chosenColor),
+        green(chosenColor),
+        blue(chosenColor),
+        230 + random(-30, 25)
+      );
+
       curveVertex(x, y);
     }
     endShape();
-    p = new Particle();
-    particles.push(p);
-    for (let k = 0; k < particles.length; k++) {
-      particles[k].createParticle(diam);
-      particles[k].moveParticle(energy > 180);
-    }
-
-    // translate(-width / 2, -height / 2);
-    // fill(0);
-    // stroke(r, g, b, a);
-    // circle(width / 2, height / 2, diam * 3.5);
   }
 }
