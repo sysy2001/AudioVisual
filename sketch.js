@@ -31,9 +31,6 @@ let curveColors = [
 
 let bgColors = ["#d9d7f1", "#fffdde", "#e7fbbe", "#ffcbcb"];
 
-//TODO
-// make drag area disappear once playing, and a go back button?
-
 function setup() {
   createCanvas(windowWidth, windowHeight - 150);
   color1 = color(217, 215, 241);
