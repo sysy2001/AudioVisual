@@ -1,7 +1,7 @@
 var song;
-var slider;
 var dropzone;
 var amp;
+var button;
 var volhistory = [];
 let particles = [];
 var playING = false;
@@ -49,14 +49,7 @@ function setup() {
   fft = new p5.FFT();
 }
 
-function resetSketch() {
-  dropzone = select("#dropzone");
-  dropzone.dragOver(highlight);
-  dropzone.dragLeave(unhighlight);
-  dropzone.drop(processFile, unhighlight);
-  amp = new p5.Amplitude();
-  fft = new p5.FFT();
-}
+
 
 class Particle {
   constructor(sp) {
@@ -93,7 +86,11 @@ class Particle {
 }
 
 function processFile(file) {
-  song = loadSound(file.data, loaded);
+  if (file.type == AUDIO) {
+    song = loadSound(file.data, loaded);
+  } else {
+    alert("AUDIO only! Wrong Type >< ")
+  }
 }
 
 function highlight() {
@@ -112,6 +109,7 @@ function loaded() {
   button = createButton("pause");
   button.id("btn");
   button.mousePressed(togglePlaying);
+
 }
 
 function togglePlaying() {
@@ -129,36 +127,22 @@ function togglePlaying() {
 function endSong() {
   if (playING == true) {
     playING = false;
-    button.remove();
-    // clear();
-    // var buttonReset = createButton("reset");
-    // buttonReset.mousePressed(resetSketch);
-  }
-}
-
-function createtheme() {
-  // randomSeed(2)
-
-  for (let i = 0; i < windowWidth; i++) {
-    strokeWeight(0.15);
-    let randomNum = Math.round(random(bgColors.length - 1));
-
-    if (randomNum < 1) {
-      stroke(color1);
-    } else if (randomNum < 2) {
-      stroke(color3);
-    } else if (randomNum < 3) {
-      stroke(color4);
-    } else {
-      stroke(color2);
+    if (button) {
+      button.remove();
     }
-
-    line(random(40) - 20 + i, 0, random(40) - 20 + i, windowHeight);
-    line(random(40) - 20 + i, 1, random(40) - 20 + i, windowHeight - 1);
-    line(0, random(40) - 20 + i, windowWidth, random(40) - 20 + i);
-    line(1, random(40) - 20 + i, windowWidth - 1, random(40) - 20 + i);
+    buttonBack = createButton("back");
+    buttonBack.id("bk");
+    buttonBack.mousePressed(goToIndex);
   }
 }
+
+
+
+function goToIndex() {
+  console.log("Going back to index...");
+  window.location.href = "index.html";
+}
+
 
 function draw() {
   if (playING == true) {
@@ -194,7 +178,6 @@ function draw() {
 
       var vertexNum = Math.round(random(curveColors.length - 1));
       var chosenColor = color(curveColors[vertexNum]);
-      // var chosenColor = color(this.color);
       stroke(
         red(chosenColor),
         green(chosenColor),

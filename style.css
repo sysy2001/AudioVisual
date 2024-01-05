@@ -22,6 +22,7 @@ p {
 #dropzone {
   padding: 20px;
   border-style: dashed;
+  font-family: Arial, sans-serif;
   font-size: 30pt;
   width: 60%;
   border-radius: 10px;
@@ -32,6 +33,25 @@ p {
 }
 
 #btn {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #0074B7;
+  background-color: #60A3D9;
+  color: #000C66;
+  padding: 20px;
+  margin: auto;
+  margin-top: 20px;
+  border-radius: 4px;
+  font-size: 15pt;
+  text-align: center;
+}
+
+
+
+
+#bk {
   cursor: pointer;
   display: flex;
   justify-content: center;
